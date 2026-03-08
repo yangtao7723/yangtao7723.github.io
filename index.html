@@ -1,699 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>扫雷915</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>妇女节快乐！</title>
     <style>
-        *{
+        body {
             margin: 0;
-            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #a18cd1);
+            font-family: 'Microsoft YaHei', sans-serif;
         }
-        body{
-          user-select: none;
-        }
-        .gameValue{
-            display:flex;
-            justify-content: center;
-        }
-        table{
-         
-            table-layout:fixed;word-break:break-all;
-            border-spacing:0px;
-        }
-        td{
-            /*https://img.tukuppt.com/ad_preview/00/16/66/RIO9GCmEUj.jpg!/fw/260*/
-            background: url(square.png);
-            background-size:100%;
-            border:0.5px solid rgba(99, 126, 141, 0.496);
-            padding:0;
-            width:28px;
-            height: 28px;
-        }
-        td div{
+
+        .container {
+            position: relative;
+            height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-        .button{
-          display: flex;
-          justify-content: center;
-          align-items: center;
+
+        .title {
+            color: #fff;
+            font-size: 2.3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
         }
-        .button div{
-          margin-top:10px;
-          margin-left:200px;
-          margin-right:200px;
-          border:2px solid rgb(64, 92, 163);
-          border-radius:5px;
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            max-width: 600px;
+            text-align: center;
+            transition: transform 0.3s;
         }
-        .end{
-          display: flex;
-          
-          justify-content: center;
-          align-items: center;
+
+        .message {
+            font-size: 1.2em;
+            color: #e91e63;
+            line-height: 1.6;
         }
-        .a{
-          display: none;
+
+        .heart {
+            position: absolute;
+            color: #ff4081;
+            animation: fall linear forwards;
         }
-        .b{
-          display: none;
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
-        #button{
-          display: none;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          width:100px;
-          height:40px;
-          background:rgb(54, 141, 110);
-          margin: 0 auto;
-          margin-top:9px;
-          color: white;
-          border-radius:15px;
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
-    <script>
-      //https://img.tukuppt.com/ad_preview/00/16/66/RIO9GCmEUj.jpg!/fw/260
-        window.onload=function()
-        {
-            document.oncontextmenu=function(e){
-               return false;
-            }
-            function create(name){
-               return document.createElement([name])
-            }
-            function chooseMode(p,obj){
-              ModeSelection=p
-              obj.style.border="2px solid black"
-              console.log(ModeSelection)
-            }
-            document.querySelector(".onclick").onclick=function(){
-              chooseMode(false,this)
-              document.querySelector(".flag").style.border="2px solid rgb(64, 92, 163)"
-            }
-            document.querySelector(".flag").onclick=function(){
-              chooseMode(true,this)
-               document.querySelector(".onclick").style.border="2px solid rgb(64, 92, 163)"
-            }
-            document.querySelector("#button").onclick=function(){
-              window.location.href="index.html"
-            }
-            //游戏数据储存
-            var width = 500, //边界宽带
-                height = 500, //边界高度
-                count = 0 //点击次数
-                color = ['rgb(178,180,181)','blue','green','red','yellow','gray','white'] //等级颜色
-            //版本
-            var version = "1.01"
-            console.log("当前版本:"+version)
-            //位置信息储存
-            var Position = []
-            //模式选择、
-            var ModeSelection = false; //false扫雷 true插旗
-            //储存方块
-            var SquareValue = []
-            //全局地雷位置
-            var MinePosition = []
-            //标记地雷数量
-            var ChooseMineNum = 0 //地雷从0计数
-            //点击方格数量
-            var OnclickSquare = 0
-            //探零函数用
-            var ExploreZero = []
-            //标记方块数量
-            var ChooseSquareNum =0
-            var time = 0;
-            var set = undefined;
-            for(var i=0;i<16;i++)
-            {
-                Position[i]=[]
-                SquareValue[i]=[]
-                ExploreZero[i]=[]
-                
-                for(var j =0;j<16;j++)
-                {
-                  Position[i][j]=false
-                  SquareValue[i][j]=0
-                  ExploreZero[i][j]=false
-                  
-                }
-            }
-          //  console.log(Position)
-            //游戏主函数
-           function Game()
-           {
-             
-             return new Game.fn.start()
-           }
-           Game.fn=Game.prototype={
-              //原型替换
-              start:function(){}, 
-              //初始化游戏数据
-              init:function()
-              {
-                   
-              },
-              //创建地雷
-              createMine:function(num)
-              {
-                var mineNum = 0
-                var mineLeft = num
-                for(var i=0;i<16*16;i++)
-                {
-                  //创建地雷概率 ：当前地雷数/(总数-当前地雷数)
-                  
-                    if(Math.floor(Math.random()*(16*16-i))<=mineLeft && typeof Position[Math.floor(i/16)][(i%16)]=="boolean")
-                    {
-                           Position[Math.floor(i/16)][(i%16)]=true
-                           mineLeft-=1
-                           MinePosition[mineNum]={y:Math.floor(i/16),x:(i%16)}
-                           mineNum++
-                    }
-                      
-                    
-                }
-             //   console.log(Position)
-              //  console.log(MinePosition)
-              },
-              //第一次点击位置
-              FirstClick:function(i,j){
-                        OnclickSquare+=9//开局开放9宫格
-                        //开始计时
-                        game.Time()
-                   //上3
-                        Position[i][j] = "1"
-                        if(i-1>=0)
-                        {
-                          for(var x =0;x<3;x++)
-                          {
-                            if(j-1+x>=0&&j-1+x<=15)
-                            {
-                             Position[i-1][j-1+x] = "1"
-                            }
-                          }
-                        }
-                        //下3
-                         if(i+1<=15)
-                         {
-                          for(var x =0;x<3;x++)
-                          {
-                            if(j-1+x>=0&&j-1+x<=15)
-                            {
-                             Position[i+1][j-1+x] = "1"
-                            }
-                          }
-                         }
-                        //左1
-                         
-                          if(j+1<=15)
-                          {
-                           
-                            
-                             Position[i][j+1] = "1"
-                            
-                          }  
-                        
-                        //右1
-                        if(j-1>=0)
-                          {
-                           
-                            
-                             Position[i][j-1] = "1"
-                            
-                          }
-                          game.createMine(40)
-                          game.refreshValue()
-                          game.onClick()
-                          game.ExploreZero(i,j)
-                          
-                          
-              },
-              //刷新数值
-              refreshValue:function()
-              {
-                for(var i=0;i<16;i++)
-                {
-                    for(var j=0;j<16;j++)
-                    {
-                      //判断是否是地雷
-                      if(!Position[i][j]||Position[i][j]==1)
-                      {
-                        //上3
-                        if(i-1>=0)
-                        {
-                          for(var x =0;x<3;x++)
-                          {
-                            if(j-1+x>=0&&j-1+x<=15)
-                            {
-                              
-                             if(Position[i-1][j-1+x]&&typeof Position[i-1][j-1+x] == 'boolean')
-                             {
-                              SquareValue[i][j]++
-                             } 
-                            }
-                          }
-                        }
-                        //下3
-                         if(i+1<=15)
-                         {
-                          for(var x =0;x<3;x++)
-                          {
-                            if(j-1+x>=0&&j-1+x<=15)
-                            {
-                             if(Position[i+1][j-1+x]&&typeof Position[i+1][j-1+x]=='boolean')
-                             {
-                              SquareValue[i][j]++
-                             } 
-                            }
-                          }
-                         }
-                        //左1
-                         
-                          if(j+1<=15)
-                          {
-                            if(Position[i][j+1]&&typeof Position[i][j+1]=='boolean')
-                            {
-                            SquareValue[i][j]++
-                            }
-                          }  
-                        
-                        //右1
-                        if(j-1>=0)
-                          {
-                            if(Position[i][j-1]&&typeof Position[i][j-1]=='boolean')
-                            {
-                            SquareValue[i][j]++
-                            }
-                          }  
-                        
-                      }
-                    }
-                }
-              //  console.log(SquareValue)
-              },
-              //创建页面
-              createPage:function()
-              {
-                var table = create("table")
-                table.style.width=width+"px"
-                table.style.height=height+"px"
-                document.querySelector(".gameValue").appendChild(table)
-                for(var i =0;i<16;i++)
-                {
-                    var tr = create("tr")
-                    table.appendChild(tr)
-                    for(var j=0;j<16;j++){
-                        var td = create("td")
-                        td.setAttribute("onclick",false)
-                        tr.appendChild(td)
-                          
-                        }
-
-                    }
-                },
-                //定义点击事件
-                onClick:function()
-                {
-                  var td = document.querySelectorAll("td")
-                  
-                  if(count==0)
-                  {
-                  
-                    for(var j =0 ; j<td.length;j++)
-                    {
-                      
-                      td[j].setAttribute("i",j)
-                      td[j].onclick=function(){
-                        var i = this.getAttribute("i")
-                        td[i].setAttribute("onclick",false)
-                        var y = Math.floor(i/16)
-                        var x = i%16
-                        game.FirstClick(y,x)
-                        
-                      }
-                    }
-                    count++
-                  }
-                  else
-                  {
-                    var td = document.querySelectorAll("td")
-                    for(var i =0 ; i<td.length;i++)
-                    {
-                    
-                     if(!Position[Math.floor(i/16)][i%16]||typeof Position[Math.floor(i/16)][i%16] =="string")
-                     {
-                            //不是地雷
-                            td[i].setAttribute("type",0)
-                            td[i].setAttribute("value",SquareValue[Math.floor(i/16)][i%16])
-                            //是否被标记
-                            td[i].setAttribute("flag",0)
-                            if(td[i].getAttribute("onclick")=="true"||typeof Position[Math.floor(i/16)][i%16] =="string")
-                            {
-                                td[i].style.background="rgb(178,180,181)"
-                                td[i].innerHTML=`<div>${td[i].getAttribute("value")}</div>`
-                                td[i].style.color=color[td[i].getAttribute("value")]
-                                td[i].setAttribute("onclick",true)
-                               
-                               
-                                
-                            }
-                            td[i].onclick=function(){
-                             if(this.getAttribute("onclick")=="false")
-                             {
-                              if(!ModeSelection)
-                              {
-                                if(this.getAttribute("flag")==0)
-                                {
-
-                                  this.style.background="rgb(178,180,181)"
-                                  this.innerHTML=`<div>${this.getAttribute("value")}</div>`
-                                  this.style.color=color[this.getAttribute("value")]
-                                  this.setAttribute("onclick",true)
-                                  OnclickSquare++
-                                  console.log(OnclickSquare)
-                                  game.IsWinner()
-                                  var i = this.getAttribute("i")
-                                  if(this.getAttribute("value")==0)
-                                  {
-                                    game.ExploreZero(Math.floor(i/16),i%16)
-                                  }
-                                 
-                                  
-                                }
-                                
-                              }
-                              else
-                              {
-                                if(this.getAttribute("flag")==0)
-                                {
-                                 this.setAttribute("flag",1)
-                                 this.style.background="url(https://bpic.588ku.com/element_origin_min_pic/19/04/09/341ef467d8e29e8ff63cf0281335ea4e.jpg)"
-                                 this.style.backgroundSize="100%"
-                                 ChooseSquareNum++
-                                 game.IsWinner()
-                                }
-                                else
-                                {
-                                 this.setAttribute("flag",0)
-                                 this.style.background="url(square.png)"
-                                 this.style.backgroundSize="100%"
-                                 ChooseSquareNum--
-                                 game.IsWinner()
-                                }
-                                
-
-                              }
-                             }
-                              
-          
-                            }
-                      }
-                      else
-                      {
-                           //是地雷
-                           td[i].setAttribute("type",1)
-                           //是否被标记
-                           td[i].setAttribute("flag",0)
-                           td[i].onclick=function(){
-                              if(!ModeSelection)
-                              {
-                                if(this.getAttribute("flag")==0)
-                                {
-                                  this.style.background="url('https://img.tukuppt.com/ad_preview/00/16/66/RIO9GCmEUj.jpg!/fw/260')"
-                                   for(var i=0;i<MinePosition.length;i++)
-                                   {
-                                    td[MinePosition[i].y*16+MinePosition[i].x].style.background="url('https://img.tukuppt.com/ad_preview/00/16/66/RIO9GCmEUj.jpg!/fw/260')"
-                                    td[MinePosition[i].y*16+MinePosition[i].x].style.backgroundSize="100%"
-                                   }
-                                    this.style.border="2px solid red"
-                                    game.GameOver()
-                                }
-                              }
-                              else
-                              {
-                                if(this.getAttribute("flag")==0)
-                                {
-                                 this.setAttribute("flag",1)
-                                 this.style.background="url(https://bpic.588ku.com/element_origin_min_pic/19/04/09/341ef467d8e29e8ff63cf0281335ea4e.jpg)"
-                                 this.style.backgroundSize="100%"
-                                 ChooseMineNum++ //增加标记数
-                                 ChooseSquareNum++
-                                 game.IsWinner()
-                                }
-                                else
-                                {
-                                 this.setAttribute("flag",0)
-                                 this.style.background="url(square.png)"
-                                 this.style.backgroundSize="100%"
-                                 ChooseMineNum--
-                                 ChooseSquareNum--
-                                }
-                              }
-                          }
-                      }
-                    }
-                  }
-                },
-                //探零函数
-                ExploreZero:function(i,j){
-                  //上3下3左1右1
-                  game.ExploreZeroTop(i,j)
-                  game.ExploreZeroBottom(i,j)      
-                  game.ExploreZeroRight(i,j)
-                  game.ExploreZeroLeft(i,j)
-                },
-                ExploreZeroTop:function(i,j){
-                       //上3
-                        if(i-1>=0)
-                        {
-                          for(var x =0;x<3;x++)
-                          {
-                            if(j-1+x>=0&&j-1+x<=15)
-                            {
-                             
-                             Position[i-1][j-1+x]=1
-                             if(SquareValue[i-1][j-1+x]==0&&!ExploreZero[i-1][j-1+x])
-                             {
-                               ExploreZero[i-1][j-1+x]=true
-                               game.ExploreZero(i-1,j-1+x)
-                               
-                             } 
-                             var td = document.querySelectorAll("td")
-                             
-                             var t = (i-1)*16+(j-1+x)
-                             
-                             td[t].setAttribute("type",0)
-                             td[t].setAttribute("value",SquareValue[Math.floor(t/16)][t%16])
-                             //是否被标记
-                             td[t].setAttribute("flag",0)
-                            
-                                td[t].style.background="rgb(178,180,181)"
-                                td[t].innerHTML=`<div>${td[t].getAttribute("value")}</div>`
-                                td[t].style.color=color[td[t].getAttribute("value")]
-                                td[t].setAttribute("onclick",true)
-                            }
-                          }
-                        }
-                },
-
-                ExploreZeroBottom:function(i,j){
-                              //下3
-                         if(i+1<=15)
-                         {
-                          for(var x =0;x<3;x++)
-                          {
-                            if(j-1+x>=0&&j-1+x<=15)
-                            {
-                              
-                              Position[i+1][j-1+x]=1
-                              if(SquareValue[i+1][j-1+x]==0&&!ExploreZero[i+1][j-1+x])
-                              {
-                               ExploreZero[i+1][j-1+x]=true
-                               game.ExploreZero(i+1,j-1+x)
-                               
-                              } 
-                              var td = document.querySelectorAll("td")
-                             
-                              var t = (i+1)*16+(j-1+x)
-                             
-                              td[t].setAttribute("type",0)
-                              td[t].setAttribute("value",SquareValue[Math.floor(t/16)][t%16])
-                              //是否被标记
-                              td[t].setAttribute("flag",0)
-                            
-                                td[t].style.background="rgb(178,180,181)"
-                                td[t].innerHTML=`<div>${td[t].getAttribute("value")}</div>`
-                                td[t].style.color=color[td[t].getAttribute("value")]
-                                td[t].setAttribute("onclick",true)
-                            }
-                          }
-                         }
-                },
-                ExploreZeroRight:function(i,j){
-                          if(j+1<=15)
-                          {
-                            
-                            Position[i][j+1]=1
-                              if(SquareValue[i][j+1]==0&&!ExploreZero[i][j+1])
-                              {
-                               ExploreZero[i][j+1]=true
-                               game.ExploreZero(i,j+1)
-                               
-                              } 
-                              var td = document.querySelectorAll("td")
-                             
-                              var t = (i)*16+(j+1)
-                             
-                              td[t].setAttribute("type",0)
-                              td[t].setAttribute("value",SquareValue[Math.floor(t/16)][t%16])
-                              //是否被标记
-                              td[t].setAttribute("flag",0)
-                            
-                                td[t].style.background="rgb(178,180,181)"
-                                td[t].innerHTML=`<div>${td[t].getAttribute("value")}</div>`
-                                td[t].style.color=color[td[t].getAttribute("value")]
-                                td[t].setAttribute("onclick",true)
-                        
-                          }  
-                },
-                ExploreZeroLeft:function(i,j){
-                           if(j-1>=0)
-                          {
-                           
-                            Position[i][j-1]=1
-                              if(SquareValue[i][j-1]==0&&!ExploreZero[i][j-1])
-                              {
-                               ExploreZero[i][j-1]=true
-                               game.ExploreZero(i,j-1)
-                               
-                              } 
-                              var td = document.querySelectorAll("td")
-                             
-                              var t = (i)*16+(j-1)
-                             
-                              td[t].setAttribute("type",0)
-                              td[t].setAttribute("value",SquareValue[Math.floor(t/16)][t%16])
-                              //是否被标记
-                              td[t].setAttribute("flag",0)
-                            
-                                td[t].style.background="rgb(178,180,181)"
-                                td[t].innerHTML=`<div>${td[t].getAttribute("value")}</div>`
-                                td[t].style.color=color[td[t].getAttribute("value")]
-                                td[t].setAttribute("onclick",true)
-                        
-                          } 
-                },
-                GameOver:function(){
-                  //注销所以td点击事件
-                  var td = document.querySelectorAll("td")
-                  for(var i =0;i<td.length;i++){
-                    td[i].onclick=undefined
-                  }
-                  document.querySelector(".a").style.display="flex"
-                  document.querySelector("#button").style.display="flex"
-                    
-                },
-                GameWiner:function(){
-                  //结束计时
-                  game.endTime()
-                   //注销所以td点击事件
-                   var td = document.querySelectorAll("td")
-                   for(var i =0;i<td.length;i++){
-                    td[i].onclick=undefined
-                   }
-                   document.querySelector(".b").style.display="flex"
-                   document.querySelector("#button").style.display="flex"
-
-                   document.querySelector(".b").innerHTML=`<h1 style="color: green;">胜利!!!</h1>
-                     <div >用时:${Math.floor(time/60)}分${time%60}秒+矫准码:${game.md5(time+"")}</div>`
-                },
-                //判断输赢
-                IsWinner:function(){
-                  if(ChooseMineNum>=MinePosition.length)
-                  {
-                    if(ChooseMineNum===ChooseSquareNum)
-                    {
-                      game.GameWiner()
-                    }
-                                   
-                  }
-                },
-                //计时器
-                Time:function(){
-                  set = setInterval(()=>{
-                    time++
-                  },1000)
-                },
-                //结束计时
-                endTime:function(){
-                  clearInterval(set)
-                },
-                md5:function(message)
-                {
-                    var str = ""
-                    for(var i=0;i<message.length;i++){
-                     str +=message.charCodeAt(i)
-                    }
-                  str = parseFloat(str)
-                  str = Math.pow(str,2)+""
-                  str1 = str
-                  str = Math.sqrt(parseInt(str.slice(1,str.length-1)+str))+""
-                    return str
-                },
-                root(password){
-                   if(md5(password)=='293877000822798.44')
-                   {
-                       var td = document.querySelectorAll("td")
-                      for(var i=0;i<MinePosition.length;i++)
-                      {
-                   
-                        td[(MinePosition[i].y)*16+MinePosition[i].x].style.border="2px solid red"
-                      }
-                   }
-                   else
-                   {
-                    console.log("密码错误！")
-                   }
-                      
-                   
-                }
-              
-
-           }
-           //交替构造函数原型
-           Game.fn.start.prototype=Game.prototype
-           var game = new Game()
-           game.init()
-           game.createPage()
-           game.onClick()
-           window.root=game.root
-           window.md5=game.md5
-           
-        }
-    </script>
 </head>
 <body>
-    <div class="gameValue"></div>
-    <div class="button">
-      <div class="onclick" style="border:2px solid black;" >
-        <img src="https://ts1.tc.mm.bing.net/th/id/OIP-C.A7HVPx4w1gwZxODeAWcYwQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"  style="height:23px;"/>
-        扫雷
-      </div>
-       
-       <div class="flag">
-        <img src="https://bpic.588ku.com/element_origin_min_pic/19/04/09/341ef467d8e29e8ff63cf0281335ea4e.jpg" style="height:23px;"/>
-        插旗
-      </div>
+    <div class="container">
+        <h1 class="title">❤️ 妇女节快乐！ ❤️</h1>
+        <div class="message-box">
+            <p class="message" id="message">点击屏幕查看更多祝福</p>
+        </div>
     </div>
-    <div class="end a">
-      <h1 style="color: red;">游戏失败!</h1>
-    </div>
-    <div class="end b">
-      <h1 style="color: green;">胜利!!!</h1>
-      <div >用时:</div>
-    </div>
-    <div id="button">重新开始</div>
+
+    <script>
+        // 祝福语数组
+        const messages = [
+            "感谢您不是超人，却为我变成了万能！",
+            "岁月不是偷走妈妈青春的神偷，我才是！",
+            "您陪我长大，我陪您慢慢变老～",
+            "世界上最美的称呼是——妈妈！",
+            "母爱是柴米油盐间的琐碎细腻❤️",
+            "妈妈的爱，藏在每一句唠叨里～",
+            "缓慢又笨拙的路上，谢谢您陪我长大！"
+        ];
+
+        // 动态创建爱心
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+
+            // 动画结束后移除元素
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        // 点击事件处理
+        let index = 0;
+        document.addEventListener('click', () => {
+            // 更新祝福语
+            document.getElementById('message').textContent = messages[index];
+            index = (index + 1) % messages.length;
+
+            // 创建多个爱心
+            for(let i = 0; i < 5; i++) {
+                createHeart();
+            }
+
+            // 添加点击动画
+            document.querySelector('.message-box').style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                document.querySelector('.message-box').style.transform = 'scale(1)';
+            }, 200);
+        });
+
+        // 自动创建爱心
+        setInterval(createHeart, 500);
+    </script>
 </body>
 </html>
+
 
